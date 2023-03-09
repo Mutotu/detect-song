@@ -5,7 +5,7 @@ const initialState = {
   authLoading: false,
   configLoading: false,
   token: "",
-  dataToLocalStorage: { numSongs: "", numArtist: "", genre: "" },
+  dataFromUser: { numSongs: "", numArtist: "", genre: "" },
   error: false,
 };
 
@@ -13,18 +13,8 @@ export const userInputSlice = createSlice({
   name: "userinput",
   initialState,
   reducers: {
-    checkLocalStorage: (state) => {
-      const retriveLocalStorage = JSON.parse(localStorage.getItem("userInput"));
-      if (retriveLocalStorage) {
-        state.dataToLocalStorage = {
-          numSongs: retriveLocalStorage.numSongs,
-          numArtist: retriveLocalStorage.numArtist,
-          genre: retriveLocalStorage.genre,
-        };
-      }
-    },
-    updateDataToLocalStorage: (state, action) => {
-      state.dataToLocalStorage = {
+    updatedataFromUser: (state, action) => {
+      state.dataFromUser = {
         numSongs: action.payload.numSongs,
         numArtist: action.payload.numArtist,
         genre: action.payload.genre,
@@ -40,14 +30,13 @@ export const userInputSlice = createSlice({
       state.error = action.payload;
     },
     getGenres: (state, action) => {
-      console.log("slice", action);
       state.genres = action.payload;
     },
   },
 });
 
 export const {
-  updateDataToLocalStorage,
+  updatedataFromUser,
   updateAuthLoading,
   checkLocalStorage,
   updateConfigLoading,
@@ -55,9 +44,7 @@ export const {
   getGenres,
 } = userInputSlice.actions;
 
-export const selectDataToLocalStorage = (state) =>
-  state.userinput.dataToLocalStorage;
-
+export const selectdataFromUser = (state) => state.userinput.dataFromUser;
 export const selectAuthLoading = (state) => state.userinput.authLoading;
 export const selectConfigLoading = (state) => state.userinput.configLoading;
 export const selectError = (state) => state.userinput.error;

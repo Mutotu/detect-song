@@ -1,5 +1,4 @@
 export const getShuffledArr = (arr) => {
-  console.log(arr);
   const newArr = arr.slice();
   for (let i = newArr.length - 1; i > 0; i--) {
     const rand = Math.floor(Math.random() * (i + 1));

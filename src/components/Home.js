@@ -6,9 +6,8 @@ import Input from "./Input";
 import styled from "styled-components";
 
 import {
-  selectDataToLocalStorage,
-  checkLocalStorage,
-  updateDataToLocalStorage,
+  selectdataFromUser,
+  updatedataFromUser,
   selectAuthLoading,
   updateAuthLoading,
   updateConfigLoading,
@@ -24,15 +23,6 @@ const AUTH_ENDPOINT =
   "https://nuod0t2zoe.execute-api.us-east-2.amazonaws.com/FT-Classroom/spotify-auth-token";
 const TOKEN_KEY = "whos-who-access-token";
 
-// const StyledHome = styled.div`
-//   width: 100%;
-//   height: 100%;
-//   display: flex;
-//   justify-content: center;
-//   flex-direction: column;
-//   align-items: center;
-// `;
-
 const StyledH1 = styled.h1`
   color: #001427;
   font-family: "Roboto";
@@ -42,62 +32,56 @@ const StyledH1 = styled.h1`
 
 const Home = () => {
   const dispatch = useDispatch();
-  const [genres, setGenres] = useState([]);
   const [token, setToken] = useState("");
-  const [dataToLocalStorage, setDataToLocalStorage] = useState({
-    numSongs: "",
-    numArtist: "",
-    genre: "",
-  });
   const history = useHistory();
   const SelectError = useSelector(selectError);
-  const DataToLocalStorage = useSelector(selectDataToLocalStorage);
+  const SelectdataFromUser = useSelector(selectdataFromUser);
   const SelectAuthLoading = useSelector(selectAuthLoading);
   const SelectConfigLoading = useSelector(selectConfigLoading);
   const SelectGenres = useSelector(selectGenres);
 
   const updateNumSongs = (event) => {
     event.persist();
-
-    setDataToLocalStorage((pre) => ({
-      ...pre,
-      [event.target.name]:
-        Number(event.target.value) < 1
-          ? 1
-          : Number(event.target.value) > 3
-          ? 3
-          : Number(event.target.value),
-    }));
-    dispatch(updateDataToLocalStorage(dataToLocalStorage));
+    dispatch(
+      updatedataFromUser({
+        ...SelectdataFromUser,
+        [event.target.name]:
+          Number(event.target.value) < 1
+            ? 1
+            : Number(event.target.value) > 3
+            ? 3
+            : Number(event.target.value),
+      })
+    );
   };
 
   const updateNumArtists = (event) => {
     event.persist();
-    setDataToLocalStorage((pre) => ({
-      ...pre,
-      [event.target.name]:
-        Number(event.target.value) < 2
-          ? 2
-          : Number(event.target.value) > 4
-          ? 4
-          : Number(event.target.value),
-    }));
-    dispatch(updateDataToLocalStorage(dataToLocalStorage));
+    dispatch(
+      updatedataFromUser({
+        ...SelectdataFromUser,
+        [event.target.name]:
+          Number(event.target.value) < 1
+            ? 1
+            : Number(event.target.value) > 3
+            ? 3
+            : Number(event.target.value),
+      })
+    );
   };
 
   const handleClick = () => {
     if (
-      !DataToLocalStorage.genre ||
-      !DataToLocalStorage.numArtist ||
-      !DataToLocalStorage.numSongs
+      !SelectdataFromUser.genre ||
+      !SelectdataFromUser.numArtist ||
+      !SelectdataFromUser.numSongs
     ) {
       updateError(true);
       return;
     }
-    dispatch(updateDataToLocalStorage(DataToLocalStorage));
+    dispatch(updatedataFromUser(SelectdataFromUser));
 
     updateError(false);
-    localStorage.setItem("userInput", JSON.stringify(dataToLocalStorage));
     history.push("/game");
   };
   const loadGenres = async (t) => {
@@ -106,15 +90,12 @@ const Home = () => {
       token: t,
       endpoint: "recommendations/available-genre-seeds",
     });
-    console.log(response);
     dispatch(getGenres(response.genres));
     dispatch(updateConfigLoading(false));
   };
 
   useEffect(() => {
-    dispatch(checkLocalStorage());
     dispatch(updateAuthLoading(true));
-
     const storedTokenString = localStorage.getItem(TOKEN_KEY);
     if (storedTokenString) {
       const storedToken = JSON.parse(storedTokenString);
@@ -148,13 +129,15 @@ const Home = () => {
     <div>
       <StyledH1>Genre:</StyledH1>
       <select
-        value={DataToLocalStorage.genre}
+        value={SelectdataFromUser.genre}
         name='genre'
         onChange={(event) =>
-          updateDataToLocalStorage({
-            ...DataToLocalStorage,
-            genre: event.target.value,
-          })
+          dispatch(
+            updatedataFromUser({
+              ...SelectdataFromUser,
+              genre: event.target.value,
+            })
+          )
         }
       >
         <option width='30px' value='' />
@@ -168,14 +151,14 @@ const Home = () => {
         tp='number'
         placeholder='Number of songs'
         name='numSongs'
-        value={dataToLocalStorage.numSongs}
+        value={SelectdataFromUser.numSongs}
         onChange={updateNumSongs}
       ></Input>
       <Input
         tp='number'
         placeholder='Number of artists'
         name='numArtist'
-        value={dataToLocalStorage.numArtist}
+        value={SelectdataFromUser.numArtist}
         onChange={updateNumArtists}
       ></Input>
       <Button w='20%' h='4rem' mg='2rem' onClick={handleClick}>

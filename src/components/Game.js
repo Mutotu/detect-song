@@ -3,6 +3,8 @@ import fetchFromSpotify, { request } from "../services/api";
 import MusicFormCard from "./MusicCard";
 import { getShuffledArr } from "../utils";
 import { useHistory } from "react-router-dom";
+import { selectdataFromUser } from "../userInput/userInputSlice";
+import { useSelector } from "react-redux";
 
 const Game = () => {
   const AUTH_ENDPOINT =
@@ -10,7 +12,7 @@ const Game = () => {
   const TOKEN_KEY = "whos-who-access-token";
   const history = useHistory();
   const [token, setToken] = useState("");
-  const parsedLocalStorage = JSON.parse(localStorage.getItem("userInput"));
+  const SelectdataFromUser = useSelector(selectdataFromUser);
   const [songs, setSongs] = useState([]);
   const [options, setOptions] = useState({
     answers: [],
@@ -19,7 +21,7 @@ const Game = () => {
   const getArtist = async (t) => {
     const response = await fetchFromSpotify({
       token: t,
-      endpoint: `search?q=genre%3A${parsedLocalStorage.genre}&type=artist`,
+      endpoint: `search?q=genre%3A${SelectdataFromUser.genre}&type=artist`,
     });
 
     const tempArtist =
@@ -40,7 +42,7 @@ const Game = () => {
     let tempSongs = getSongs.tracks.filter((track) => track.preview_url);
     let tempArr = [];
 
-    for (let i = 0; i < parsedLocalStorage.numSongs; i++) {
+    for (let i = 0; i < SelectdataFromUser.numSongs; i++) {
       let tempSong = tempSongs[Math.floor(Math.random() * tempSongs.length)];
       while (tempArr.includes(tempSong)) {
         tempSong = tempSongs[Math.floor(Math.random() * tempSongs.length)];
@@ -53,7 +55,7 @@ const Game = () => {
       token: t,
       endpoint: `artists/${tempArtist.id}/related-artists`,
     });
-    for (let i = 0; i < parsedLocalStorage.numArtist - 1; i++) {
+    for (let i = 0; i < SelectdataFromUser.numArtist - 1; i++) {
       tempAnswer = {
         artist:
           relatedArtist.artists[
