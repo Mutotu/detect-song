@@ -1,66 +1,38 @@
 import React, { useState } from "react";
 import ReactAudioPlayer from "react-audio-player";
-import styled from 'styled-components'
-
-
-const StyledDiv = styled.div`
-  height: 100vh;
-  display: flex;
-  justify-content: space-around;
-`
-
-const StyledLabel = styled.label`
-  padding: 10px;
-`
-
-const FlexColumn = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  align-items: center;
-  justify-content: space-around;
-  
-`
-const AnswerBox = styled.div`
-  gap: 10px;
-  & img {
-    display: inline;
-    height: 100px;
-    width: 100px;
-  }
-  & h5 {
-    display: inline;
-  }
-  & label {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-`
-const Button = styled.button`
-  width: 10.5vw;
-`
+import {
+  StyledDiv,
+  StyledLabel,
+  FlexColumn,
+  AnswerBox,
+  Button,
+} from "./styles/Styles";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  updateIsCorrect,
+  selecIsCorrect,
+  updateSelectedOption,
+  selectedOption,
+} from "../options/optionsSlice";
 
 const MusicFormCard = (props) => {
-  const [isCorrect, setIsCorrect] = useState(false);
-  const [selectedOption, setSelectedOption] = useState("");
+  const dispatch = useDispatch();
+  const SelectCorrect = useSelector(selecIsCorrect);
+  const SelectedOption = useSelector(selectedOption);
   const { options, songs } = props;
 
   const handleOptionChange = (e) => {
-    setSelectedOption(e.target.name);
+    dispatch(updateSelectedOption(e.target.name));
   };
 
   const handleClick = () => {
-    console.log(options.answers.filter((o) => o.correct)[0].artist.name);
     if (
-      selectedOption === options.answers.filter((o) => o.correct)[0].artist.name
+      SelectedOption === options.answers.filter((o) => o.correct)[0].artist.name
     ) {
-      setIsCorrect(true);
-      console.log(songs);
+      dispatch(updateIsCorrect(true));
       return;
     }
-    setIsCorrect(false);
-    console.log("no correct");
+    dispatch(updateIsCorrect(false));
   };
 
   return (
@@ -75,8 +47,8 @@ const MusicFormCard = (props) => {
               <input
                 type='radio'
                 name={option.artist.name}
-                value={selectedOption}
-                checked={selectedOption === option.artist.name}
+                value={SelectedOption}
+                checked={SelectedOption === option.artist.name}
                 onChange={handleOptionChange}
               />
               <img src={option.artist.images[0].url} />
@@ -85,10 +57,9 @@ const MusicFormCard = (props) => {
           ))}
         </AnswerBox>
         <Button onClick={handleClick}>Submit</Button>
-      {isCorrect && <h3>correct</h3>}
+        {SelectCorrect && <h3>correct</h3>}
       </FlexColumn>
-      
-    </StyledDiv >
+    </StyledDiv>
   );
 };
 

@@ -3,7 +3,7 @@ import { useHistory } from "react-router-dom";
 import fetchFromSpotify, { request } from "../services/api";
 import Button from "./Button";
 import Input from "./Input";
-import styled from "styled-components";
+import { StyledHome, StyledH1 } from "./styles/Styles";
 
 import {
   selectdataFromUser,
@@ -22,13 +22,6 @@ import { useSelector, useDispatch } from "react-redux";
 const AUTH_ENDPOINT =
   "https://nuod0t2zoe.execute-api.us-east-2.amazonaws.com/FT-Classroom/spotify-auth-token";
 const TOKEN_KEY = "whos-who-access-token";
-
-const StyledH1 = styled.h1`
-  color: #001427;
-  font-family: "Roboto";
-  font-style: normal;
-  font-weight: 300;
-`;
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -126,7 +119,7 @@ const Home = () => {
   }
 
   return (
-    <div>
+    <StyledHome>
       <StyledH1>Genre:</StyledH1>
       <select
         value={SelectdataFromUser.genre}
@@ -165,7 +158,7 @@ const Home = () => {
         Play
       </Button>
       {SelectError && <p>Please enter all the values</p>}
-    </div>
+    </StyledHome>
   );
 };
 
