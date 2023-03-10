@@ -75,3 +75,24 @@ export const AnswerBox = styled.div`
 export const Button = styled.button`
   width: 10.5vw;
 `;
+export const PTag = styled.p`
+  color: #fb4264;
+  font-size: 1.5rem;
+  text-shadow: 0 0 3vw #f40a35;
+  animation: ${({ g }) => g} 1s ease infinite;
+  -moz-animation: ${({ g }) => g} 1.2s ease infinite;
+  -webkit-animation: ${({ g }) => g} 1.2s ease infinite;
+  @keyframes glow {
+    0%,
+    100% {
+      text-shadow: 0 0 1vw #fa1c16, 0 0 3vw #fa1c16, 0 0 10vw #fa1c16,
+        0 0 10vw #fa1c16, 0 0 0.4vw #fed128, 0.5vw 0.5vw 0.1vw #806914;
+      color: #fed128;
+    }
+    50% {
+      text-shadow: 0 0 0.5vw #800e0b, 0 0 1.5vw #800e0b, 0 0 5vw #800e0b,
+        0 0 5vw #800e0b, 0 0 0.2vw #800e0b, 0.5vw 0.5vw 0.1vw #40340a;
+      color: #806914;
+    }
+  }
+`;
